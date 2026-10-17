@@ -103,26 +103,26 @@
 
   /* Lee's girly theme — light */
   :root[data-profile="lees-plan"] {
-    --bg: #FFF5F7;
+    --bg: #FFFBFC;
     --surface: #FFFFFF;
-    --surface-alt: #FCE4EC;
+    --surface-alt: #FFF0F3;
     --fg: #2D1B2E;
-    --fg-secondary: #8E6B8A;
-    --accent: #E91E90;
-    --accent-soft: #FCE4EC;
-    --accent-glow: rgba(233,30,144,0.10);
-    --border: #F3C4D7;
-    --badge-circuit: #E91E90;
-    --badge-hiit: #D32F7B;
-    --badge-metcon: #9C27B0;
-    --timer-bg: #E91E90;
+    --fg-secondary: #9E8A9B;
+    --accent: #FF1493;
+    --accent-soft: #FFF0F5;
+    --accent-glow: rgba(255,20,147,0.08);
+    --border: #F5DAE2;
+    --badge-circuit: #FF1493;
+    --badge-hiit: #E91E7E;
+    --badge-metcon: #A855F7;
+    --timer-bg: #FF1493;
     --timer-fg: #FFFFFF;
     --danger: #D32F2F;
-    --danger-soft: #FCE4EC;
-    --warmup: #AD1457;
-    --warmup-soft: #FCE4EC;
-    --cooldown: #9C27B0;
-    --cooldown-soft: #F3E5F5;
+    --danger-soft: #FFF0F5;
+    --warmup: #C2185B;
+    --warmup-soft: #FFF0F5;
+    --cooldown: #A855F7;
+    --cooldown-soft: #FAF5FF;
   }
   /* Lee's girly theme — dark (auto) */
   @media (prefers-color-scheme: dark) {
@@ -175,7 +175,10 @@
 
   /* Lee's profile tab highlight */
   :root[data-profile="lees-plan"] .profile-tab.active {
-    background: linear-gradient(135deg, #FCE4EC, #F3E5F5);
+    background: #FF1493; color: #FFFFFF;
+  }
+  :root[data-profile="lees-plan"] .profile-tab.active small {
+    opacity: 0.9;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
