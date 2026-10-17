@@ -28,6 +28,9 @@
     --badge-pull: #2563EB;
     --badge-legs: #B45309;
     --badge-upper: #7C3AED;
+    --badge-circuit: #059669;
+    --badge-hiit: #DC2626;
+    --badge-metcon: #7C3AED;
     --timer-bg: #059669;
     --timer-fg: #FFFFFF;
     --danger: #DC2626;
@@ -56,6 +59,9 @@
       --badge-pull: #60A5FA;
       --badge-legs: #FBBF24;
       --badge-upper: #A78BFA;
+      --badge-circuit: #34D399;
+      --badge-hiit: #F87171;
+      --badge-metcon: #A78BFA;
       --timer-bg: #059669;
       --timer-fg: #FFFFFF;
       --danger: #F87171;
@@ -81,6 +87,9 @@
     --badge-pull: #60A5FA;
     --badge-legs: #FBBF24;
     --badge-upper: #A78BFA;
+    --badge-circuit: #34D399;
+    --badge-hiit: #F87171;
+    --badge-metcon: #A78BFA;
     --timer-bg: #059669;
     --timer-fg: #FFFFFF;
     --danger: #F87171;
@@ -106,7 +115,29 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .header { padding-top: 24px; margin-bottom: 6px; }
+  .profile-bar {
+    display: flex; gap: 4px; margin-top: 16px;
+    background: var(--surface-alt); border-radius: var(--radius);
+    padding: 4px; border: 1px solid var(--border);
+  }
+  .profile-tab {
+    flex: 1; padding: 10px 8px; border: none;
+    border-radius: var(--radius-sm); background: transparent;
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    color: var(--fg-secondary); cursor: pointer; transition: all 0.15s;
+    text-align: center; line-height: 1.2;
+  }
+  .profile-tab small {
+    display: block; font-size: 10px; font-weight: 500;
+    margin-top: 2px; opacity: 0.7;
+  }
+  .profile-tab.active {
+    background: var(--surface); color: var(--fg);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .profile-tab:hover:not(.active) { background: rgba(0,0,0,0.03); }
+
+  .header { padding-top: 14px; margin-bottom: 6px; }
   .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-logo {
@@ -135,10 +166,6 @@
     cursor: pointer; transition: all 0.15s;
   }
   .view-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .week-label {
-    font-size: 13px; color: var(--fg-secondary);
-    font-weight: 500; white-space: nowrap;
-  }
   .week-progress {
     display: flex; gap: 6px; align-items: center;
     margin-top: 14px; padding: 10px 14px;
@@ -191,6 +218,9 @@
   .workout-badge.pull { background: rgba(37,99,235,0.1); color: var(--badge-pull); }
   .workout-badge.legs { background: rgba(180,83,9,0.1); color: var(--badge-legs); }
   .workout-badge.upper { background: rgba(124,58,237,0.1); color: var(--badge-upper); }
+  .workout-badge.circuit { background: rgba(5,150,105,0.1); color: var(--badge-circuit); }
+  .workout-badge.hiit { background: rgba(220,38,38,0.1); color: var(--badge-hiit); }
+  .workout-badge.metcon { background: rgba(124,58,237,0.1); color: var(--badge-metcon); }
   .workout-focus { font-size: 15px; color: var(--fg-secondary); font-weight: 500; }
   .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
   .progress-track { flex: 1; height: 6px; background: var(--surface-alt); border-radius: 3px; overflow: hidden; }
@@ -421,6 +451,7 @@
 </head>
 <body>
 
+<div id="profileBar"></div>
 <div id="app"></div>
 
 <div class="timer-bar" id="timerBar">
@@ -433,68 +464,272 @@
 const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 const DAY_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-const WORKOUTS = {
-  monday: {
-    type: 'push', label: 'Push', focus: 'Chest & Shoulders',
-    exercises: [
-      { name: 'Dumbbell Flat Press', sets: 4, reps: '8–10', rest: 90 },
-      { name: 'Dumbbell Incline Press', sets: 3, reps: '10–12', rest: 90 },
-      { name: 'Dumbbell Shoulder Press', sets: 3, reps: '8–10', rest: 90 },
-      { name: 'Dumbbell Lateral Raises', sets: 3, reps: '12–15', rest: 60 },
-      { name: 'Dumbbell Skull Crushers', sets: 3, reps: '10–12', rest: 60 },
-      { name: 'Overhead DB Tricep Extension', sets: 2, reps: '12–15', rest: 60 }
-    ],
-    finisher: { name: 'Treadmill Incline Walk', detail: '10 min at 10–15% grade' }
+const PROFILES = {
+  'golden-goat': {
+    name: 'Golden Goat',
+    subtitle: 'Muscle Building',
+    workouts: {
+      monday: {
+        type: 'push', label: 'Push', focus: 'Chest & Shoulders',
+        exercises: [
+          { name: 'Dumbbell Flat Press', sets: 4, reps: '8–10', rest: 90 },
+          { name: 'Dumbbell Incline Press', sets: 3, reps: '10–12', rest: 90 },
+          { name: 'Dumbbell Shoulder Press', sets: 3, reps: '8–10', rest: 90 },
+          { name: 'Dumbbell Lateral Raises', sets: 3, reps: '12–15', rest: 60 },
+          { name: 'Dumbbell Skull Crushers', sets: 3, reps: '10–12', rest: 60 },
+          { name: 'Overhead DB Tricep Extension', sets: 2, reps: '12–15', rest: 60 }
+        ],
+        finisher: { name: 'Treadmill Incline Walk', detail: '10 min at 10–15% grade' }
+      },
+      tuesday: {
+        type: 'pull', label: 'Pull', focus: 'Back & Biceps',
+        exercises: [
+          { name: 'Lat Pulldown (Wide Grip)', sets: 4, reps: '8–10', rest: 90 },
+          { name: 'Lat Pulldown (Close Grip)', sets: 3, reps: '10–12', rest: 90 },
+          { name: 'Dumbbell Bent-Over Rows', sets: 3, reps: '8–10 each', rest: 90 },
+          { name: 'Dumbbell Reverse Flyes', sets: 3, reps: '12–15', rest: 60 },
+          { name: 'Dumbbell Bicep Curls', sets: 3, reps: '10–12', rest: 60 },
+          { name: 'Dumbbell Hammer Curls', sets: 2, reps: '12–15', rest: 60 }
+        ],
+        finisher: { name: 'Treadmill Intervals', detail: '8 min · 30s sprint / 60s walk' }
+      },
+      wednesday: {
+        type: 'legs', label: 'Legs', focus: 'Quads & Calves',
+        exercises: [
+          { name: 'Dumbbell Goblet Squats', sets: 4, reps: '10–12', rest: 90 },
+          { name: 'Bulgarian Split Squats', sets: 3, reps: '10 each', rest: 90 },
+          { name: 'Dumbbell Romanian Deadlifts', sets: 3, reps: '10–12', rest: 90 },
+          { name: 'Dumbbell Walking Lunges', sets: 3, reps: '12 each', rest: 60 },
+          { name: 'Dumbbell Calf Raises', sets: 3, reps: '15–20', rest: 60 }
+        ],
+        finisher: { name: 'Treadmill Incline Walk', detail: '10 min at 12–15% grade' }
+      },
+      thursday: {
+        type: 'upper', label: 'Upper', focus: 'Push + Pull Combo',
+        exercises: [
+          { name: 'Dumbbell Arnold Press', sets: 3, reps: '8–10', rest: 90 },
+          { name: 'Lat Pulldown (Underhand)', sets: 3, reps: '8–10', rest: 90 },
+          { name: 'Dumbbell Floor Press', sets: 3, reps: '10–12', rest: 90 },
+          { name: 'Dumbbell Single-Arm Row', sets: 3, reps: '10 each', rest: 90 },
+          { name: 'Dumbbell Lateral Raises', sets: 3, reps: '12–15', rest: 60 },
+          { name: 'Dumbbell Incline Curls', sets: 3, reps: '10–12', rest: 60 },
+          { name: 'Dumbbell Kickbacks', sets: 3, reps: '12–15', rest: 60 }
+        ],
+        finisher: { name: 'Treadmill Intervals', detail: '8 min · 30s sprint / 60s walk' }
+      },
+      friday: null,
+      saturday: null,
+      sunday: {
+        type: 'legs', label: 'Legs', focus: 'Hamstrings & Glutes',
+        exercises: [
+          { name: 'Dumbbell Sumo Squats', sets: 4, reps: '10–12', rest: 90 },
+          { name: 'Dumbbell Stiff-Leg Deadlifts', sets: 3, reps: '10–12', rest: 90 },
+          { name: 'Dumbbell Step-Ups', sets: 3, reps: '10 each', rest: 90 },
+          { name: 'Dumbbell Hip Thrusts', sets: 3, reps: '12–15', rest: 60 },
+          { name: 'Dumbbell Calf Raises', sets: 3, reps: '15–20', rest: 60 },
+          { name: 'Dumbbell Shrugs', sets: 3, reps: '12–15', rest: 60 }
+        ],
+        finisher: { name: 'Treadmill Incline Walk', detail: '10 min at 10–15% grade' }
+      }
+    },
+    warmups: {
+      push: [
+        { name: 'Arm Circles', detail: '20 forward + 20 backward' },
+        { name: 'Shoulder Pass-Throughs', detail: 'Towel or broomstick · 10 slow reps' },
+        { name: 'Scapular Push-Ups', detail: 'On all fours, squeeze shoulder blades · 10 reps' },
+        { name: 'Slow Push-Ups', detail: '3s down, 3s up · 8 reps' },
+        { name: 'Light Dumbbell Press', detail: 'Lightest dumbbells · 15 easy reps' }
+      ],
+      pull: [
+        { name: 'Cat-Cow Stretch', detail: 'On all fours, arch and round your back · 10 reps' },
+        { name: 'Arm Circles', detail: '20 forward + 20 backward' },
+        { name: 'Scapular Squeezes', detail: 'Squeeze shoulder blades together · 15 reps' },
+        { name: 'Band/Towel Pull-Aparts', detail: 'Pull towel apart at chest height · 15 reps' },
+        { name: 'Light Lat Pulldowns', detail: 'Lightest setting · 15 easy reps' }
+      ],
+      legs: [
+        { name: 'Bodyweight Squats', detail: '15 slow reps with good form' },
+        { name: 'Leg Swings (Front/Back)', detail: 'Hold something for balance · 10 each leg' },
+        { name: 'Hip Circles', detail: 'Standing, circle each leg · 10 each direction' },
+        { name: 'Walking Knee Hugs', detail: 'Pull knee to chest as you walk · 10 each' },
+        { name: 'Bodyweight Lunges', detail: 'Alternating · 10 total' }
+      ],
+      upper: [
+        { name: 'Jumping Jacks', detail: '30 seconds' },
+        { name: 'Arm Circles', detail: '20 forward + 20 backward' },
+        { name: 'Slow Push-Ups', detail: '3s down, 3s up · 8 reps' },
+        { name: 'Band/Towel Pull-Aparts', detail: 'Pull towel apart at chest height · 15 reps' },
+        { name: 'Light Shoulder Press', detail: 'Lightest dumbbells · 12 easy reps' }
+      ]
+    },
+    cooldowns: {
+      push: [
+        { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
+        { name: 'Overhead Tricep Stretch', detail: 'Pull elbow behind head · 30s each arm' },
+        { name: 'Cross-Body Shoulder Stretch', detail: 'Pull arm across chest · 30s each side' },
+        { name: 'Child’s Pose', detail: 'Kneel and reach forward on the floor · 30s' }
+      ],
+      pull: [
+        { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
+        { name: 'Bicep Wall Stretch', detail: 'Palm on wall behind you, turn body away · 30s each arm' },
+        { name: 'Seated Forward Fold', detail: 'Sit with legs out, reach for toes · 30s' },
+        { name: 'Child’s Pose', detail: 'Kneel and reach forward on the floor · 30s' }
+      ],
+      legs: [
+        { name: 'Standing Quad Stretch', detail: 'Pull heel to glute · 30s each leg' },
+        { name: 'Standing Hamstring Stretch', detail: 'Foot on low surface, lean forward · 30s each' },
+        { name: 'Hip Flexor Lunge Stretch', detail: 'Kneel in lunge, push hips forward · 30s each' },
+        { name: 'Pigeon Stretch', detail: 'Front shin across body, lean forward · 30s each' },
+        { name: 'Calf Stretch Against Wall', detail: 'Lean into wall, back leg straight · 30s each' }
+      ],
+      upper: [
+        { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
+        { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
+        { name: 'Overhead Tricep Stretch', detail: 'Pull elbow behind head · 30s each arm' },
+        { name: 'Bicep Wall Stretch', detail: 'Palm on wall behind you, turn body away · 30s each arm' }
+      ]
+    }
   },
-  tuesday: {
-    type: 'pull', label: 'Pull', focus: 'Back & Biceps',
-    exercises: [
-      { name: 'Lat Pulldown (Wide Grip)', sets: 4, reps: '8–10', rest: 90 },
-      { name: 'Lat Pulldown (Close Grip)', sets: 3, reps: '10–12', rest: 90 },
-      { name: 'Dumbbell Bent-Over Rows', sets: 3, reps: '8–10 each', rest: 90 },
-      { name: 'Dumbbell Reverse Flyes', sets: 3, reps: '12–15', rest: 60 },
-      { name: 'Dumbbell Bicep Curls', sets: 3, reps: '10–12', rest: 60 },
-      { name: 'Dumbbell Hammer Curls', sets: 2, reps: '12–15', rest: 60 }
-    ],
-    finisher: { name: 'Treadmill Intervals', detail: '8 min · 30s sprint / 60s walk' }
-  },
-  wednesday: {
-    type: 'legs', label: 'Legs', focus: 'Quads & Calves',
-    exercises: [
-      { name: 'Dumbbell Goblet Squats', sets: 4, reps: '10–12', rest: 90 },
-      { name: 'Bulgarian Split Squats', sets: 3, reps: '10 each', rest: 90 },
-      { name: 'Dumbbell Romanian Deadlifts', sets: 3, reps: '10–12', rest: 90 },
-      { name: 'Dumbbell Walking Lunges', sets: 3, reps: '12 each', rest: 60 },
-      { name: 'Dumbbell Calf Raises', sets: 3, reps: '15–20', rest: 60 }
-    ],
-    finisher: { name: 'Treadmill Incline Walk', detail: '10 min at 12–15% grade' }
-  },
-  thursday: {
-    type: 'upper', label: 'Upper', focus: 'Push + Pull Combo',
-    exercises: [
-      { name: 'Dumbbell Arnold Press', sets: 3, reps: '8–10', rest: 90 },
-      { name: 'Lat Pulldown (Underhand)', sets: 3, reps: '8–10', rest: 90 },
-      { name: 'Dumbbell Floor Press', sets: 3, reps: '10–12', rest: 90 },
-      { name: 'Dumbbell Single-Arm Row', sets: 3, reps: '10 each', rest: 90 },
-      { name: 'Dumbbell Lateral Raises', sets: 3, reps: '12–15', rest: 60 },
-      { name: 'Dumbbell Incline Curls', sets: 3, reps: '10–12', rest: 60 },
-      { name: 'Dumbbell Kickbacks', sets: 3, reps: '12–15', rest: 60 }
-    ],
-    finisher: { name: 'Treadmill Intervals', detail: '8 min · 30s sprint / 60s walk' }
-  },
-  friday: null,
-  saturday: null,
-  sunday: {
-    type: 'legs', label: 'Legs', focus: 'Hamstrings & Glutes',
-    exercises: [
-      { name: 'Dumbbell Sumo Squats', sets: 4, reps: '10–12', rest: 90 },
-      { name: 'Dumbbell Stiff-Leg Deadlifts', sets: 3, reps: '10–12', rest: 90 },
-      { name: 'Dumbbell Step-Ups', sets: 3, reps: '10 each', rest: 90 },
-      { name: 'Dumbbell Hip Thrusts', sets: 3, reps: '12–15', rest: 60 },
-      { name: 'Dumbbell Calf Raises', sets: 3, reps: '15–20', rest: 60 },
-      { name: 'Dumbbell Shrugs', sets: 3, reps: '12–15', rest: 60 }
-    ],
-    finisher: { name: 'Treadmill Incline Walk', detail: '10 min at 10–15% grade' }
+  'lees-plan': {
+    name: "Lee’s Plan",
+    subtitle: 'Weight Loss',
+    workouts: {
+      monday: {
+        type: 'circuit', label: 'Circuit', focus: 'Full Body Burn A',
+        exercises: [
+          { name: 'Dumbbell Thrusters', sets: 3, reps: '12', rest: 45 },
+          { name: 'Lat Pulldown (Wide Grip)', sets: 3, reps: '15', rest: 45 },
+          { name: 'Medicine Ball Slams', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Walking Lunges', sets: 3, reps: '12 each', rest: 45 },
+          { name: 'Dumbbell Bent-Over Rows', sets: 3, reps: '12 each', rest: 45 },
+          { name: 'Medicine Ball Russian Twists', sets: 3, reps: '20 total', rest: 30 }
+        ],
+        finisher: { name: 'Treadmill Intervals', detail: '15 min · 30s sprint / 60s jog' }
+      },
+      tuesday: {
+        type: 'legs', label: 'Lower', focus: 'Legs & Core',
+        exercises: [
+          { name: 'Dumbbell Goblet Squats', sets: 3, reps: '15', rest: 45 },
+          { name: 'Medicine Ball Woodchops', sets: 3, reps: '12 each side', rest: 30 },
+          { name: 'Dumbbell Romanian Deadlifts', sets: 3, reps: '12', rest: 45 },
+          { name: 'Dumbbell Step-Ups', sets: 3, reps: '12 each', rest: 45 },
+          { name: 'Medicine Ball Slams', sets: 3, reps: '12', rest: 30 },
+          { name: 'Dumbbell Calf Raises', sets: 3, reps: '20', rest: 30 }
+        ],
+        finisher: { name: 'Treadmill Incline Walk', detail: '15 min at 12–15% grade' }
+      },
+      wednesday: {
+        type: 'pull', label: 'Upper', focus: 'Upper Body Burn',
+        exercises: [
+          { name: 'Lat Pulldown (Close Grip)', sets: 3, reps: '15', rest: 45 },
+          { name: 'Dumbbell Shoulder Press', sets: 3, reps: '12', rest: 45 },
+          { name: 'Medicine Ball Push-Ups', sets: 3, reps: '12', rest: 30 },
+          { name: 'Dumbbell Bicep Curls', sets: 3, reps: '12', rest: 45 },
+          { name: 'Dumbbell Lateral Raises', sets: 3, reps: '15', rest: 30 },
+          { name: 'Medicine Ball Russian Twists', sets: 3, reps: '20 total', rest: 30 }
+        ],
+        finisher: { name: 'Treadmill Sprints', detail: '12 min · 20s all-out / 40s walk' }
+      },
+      thursday: {
+        type: 'hiit', label: 'HIIT', focus: 'Full Body Power',
+        exercises: [
+          { name: 'Dumbbell Clean & Press', sets: 3, reps: '10', rest: 30 },
+          { name: 'Lat Pulldown (Underhand)', sets: 3, reps: '15', rest: 30 },
+          { name: 'Medicine Ball Wall Balls', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Sumo Squats', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Renegade Rows', sets: 3, reps: '10 each', rest: 30 },
+          { name: 'Medicine Ball Mountain Climbers', sets: 3, reps: '20 each', rest: 30 }
+        ],
+        finisher: { name: 'Treadmill Sprints', detail: '10 min · 20s all-out / 40s walk' }
+      },
+      friday: null,
+      saturday: null,
+      sunday: {
+        type: 'metcon', label: 'Metcon', focus: 'Metabolic Conditioning',
+        exercises: [
+          { name: 'Dumbbell Goblet Squats', sets: 3, reps: '15', rest: 30 },
+          { name: 'Medicine Ball Slams', sets: 3, reps: '15', rest: 30 },
+          { name: 'Lat Pulldown (Wide Grip)', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Walking Lunges', sets: 3, reps: '12 each', rest: 30 },
+          { name: 'Medicine Ball Woodchops', sets: 3, reps: '12 each side', rest: 30 },
+          { name: 'Dumbbell Shoulder Press', sets: 3, reps: '12', rest: 30 }
+        ],
+        finisher: { name: 'Treadmill Hill Intervals', detail: '15 min · 1 min 12% grade / 1 min flat' }
+      }
+    },
+    warmups: {
+      circuit: [
+        { name: 'Jumping Jacks', detail: '30 seconds' },
+        { name: 'High Knees', detail: 'In place · 20 seconds' },
+        { name: 'Arm Circles', detail: '20 forward + 20 backward' },
+        { name: 'Bodyweight Squats', detail: '15 slow reps' },
+        { name: 'Medicine Ball Halos', detail: 'Circle the ball around your head · 10 each direction' }
+      ],
+      legs: [
+        { name: 'Bodyweight Squats', detail: '15 slow reps with good form' },
+        { name: 'Leg Swings (Front/Back)', detail: 'Hold something for balance · 10 each leg' },
+        { name: 'Hip Circles', detail: 'Standing, circle each leg · 10 each direction' },
+        { name: 'Walking Knee Hugs', detail: 'Pull knee to chest as you walk · 10 each' },
+        { name: 'Bodyweight Lunges', detail: 'Alternating · 10 total' }
+      ],
+      pull: [
+        { name: 'Jumping Jacks', detail: '30 seconds' },
+        { name: 'Arm Circles', detail: '20 forward + 20 backward' },
+        { name: 'Slow Push-Ups', detail: '3s down, 3s up · 8 reps' },
+        { name: 'Band/Towel Pull-Aparts', detail: 'Pull towel apart at chest height · 15 reps' },
+        { name: 'Light Shoulder Press', detail: 'Lightest dumbbells · 12 easy reps' }
+      ],
+      hiit: [
+        { name: 'Jumping Jacks', detail: '30 seconds' },
+        { name: 'High Knees', detail: 'In place · 20 seconds' },
+        { name: 'Arm Circles', detail: '20 forward + 20 backward' },
+        { name: 'Bodyweight Squats', detail: '15 reps' },
+        { name: 'Light Dumbbell Thrusters', detail: 'Lightest dumbbells · 10 easy reps' }
+      ],
+      metcon: [
+        { name: 'Jumping Jacks', detail: '30 seconds' },
+        { name: 'High Knees', detail: 'In place · 20 seconds' },
+        { name: 'Bodyweight Squats', detail: '15 reps' },
+        { name: 'Arm Circles', detail: '20 forward + 20 backward' },
+        { name: 'Medicine Ball Halos', detail: 'Circle the ball around your head · 10 each direction' }
+      ]
+    },
+    cooldowns: {
+      circuit: [
+        { name: 'Standing Quad Stretch', detail: 'Pull heel to glute · 30s each leg' },
+        { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
+        { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
+        { name: 'Hip Flexor Lunge Stretch', detail: 'Kneel in lunge, push hips forward · 30s each' },
+        { name: 'Child’s Pose', detail: 'Kneel and reach forward on the floor · 30s' }
+      ],
+      legs: [
+        { name: 'Standing Quad Stretch', detail: 'Pull heel to glute · 30s each leg' },
+        { name: 'Standing Hamstring Stretch', detail: 'Foot on low surface, lean forward · 30s each' },
+        { name: 'Hip Flexor Lunge Stretch', detail: 'Kneel in lunge, push hips forward · 30s each' },
+        { name: 'Pigeon Stretch', detail: 'Front shin across body, lean forward · 30s each' },
+        { name: 'Calf Stretch Against Wall', detail: 'Lean into wall, back leg straight · 30s each' }
+      ],
+      pull: [
+        { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
+        { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
+        { name: 'Overhead Tricep Stretch', detail: 'Pull elbow behind head · 30s each arm' },
+        { name: 'Bicep Wall Stretch', detail: 'Palm on wall behind you, turn body away · 30s each arm' }
+      ],
+      hiit: [
+        { name: 'Standing Quad Stretch', detail: 'Pull heel to glute · 30s each leg' },
+        { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
+        { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
+        { name: 'Seated Forward Fold', detail: 'Sit with legs out, reach for toes · 30s' },
+        { name: 'Child’s Pose', detail: 'Kneel and reach forward on the floor · 30s' }
+      ],
+      metcon: [
+        { name: 'Standing Quad Stretch', detail: 'Pull heel to glute · 30s each leg' },
+        { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
+        { name: 'Hip Flexor Lunge Stretch', detail: 'Kneel in lunge, push hips forward · 30s each' },
+        { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
+        { name: 'Child’s Pose', detail: 'Kneel and reach forward on the floor · 30s' }
+      ]
+    }
   }
 };
 
@@ -526,67 +761,25 @@ const GUIDES = {
   'Dumbbell Stiff-Leg Deadlifts': { steps: ['Stand holding dumbbells in front of your thighs, feet hip-width','Keep your legs nearly straight (just a tiny bend in the knees)','Hinge at the hips and lower the dumbbells toward the floor','Stop when you feel a strong hamstring stretch, then return to standing'], tip: 'Straighter legs than Romanian deadlifts — more hamstring focus' },
   'Dumbbell Step-Ups': { steps: ['Stand facing a sturdy bench or chair, holding dumbbells at your sides','Step up with one foot, driving through your heel','Bring your other foot up to stand on the bench','Step back down with control, leading with the same leg that followed up'], tip: 'Don’t push off your back foot — make the working leg do all the lifting' },
   'Dumbbell Hip Thrusts': { steps: ['Sit on the floor with your upper back against a bench','Place a dumbbell on your hips (use a towel for padding)','With feet flat on the floor, drive your hips up until your body forms a straight line','Squeeze your glutes hard at the top, then lower back down'], tip: 'Tuck your chin and look forward, not up — this protects your lower back' },
-  'Dumbbell Shrugs': { steps: ['Stand holding heavy dumbbells at your sides, arms straight','Shrug your shoulders straight up toward your ears','Hold the top position for a second, squeezing your traps','Lower back down slowly'], tip: 'Don’t roll your shoulders — just straight up and down' }
+  'Dumbbell Shrugs': { steps: ['Stand holding heavy dumbbells at your sides, arms straight','Shrug your shoulders straight up toward your ears','Hold the top position for a second, squeezing your traps','Lower back down slowly'], tip: 'Don’t roll your shoulders — just straight up and down' },
+  'Dumbbell Thrusters': { steps: ['Hold dumbbells at shoulder height, feet shoulder-width apart','Squat down until thighs are parallel to the floor','Drive up explosively and press the dumbbells overhead in one smooth motion','Lower the dumbbells back to your shoulders as you drop into the next squat'], tip: 'Use the momentum from your legs to power the press — it should feel like one fluid movement' },
+  'Medicine Ball Slams': { steps: ['Stand with feet shoulder-width apart, holding the medicine ball overhead','Brace your core and slam the ball down to the ground as hard as you can','Hinge at the hips and bend your knees slightly as you slam','Catch the ball on the bounce (or pick it up) and go right into the next rep'], tip: 'This is about power, not weight — throw it like you mean it and exhale on every slam' },
+  'Medicine Ball Russian Twists': { steps: ['Sit on the floor with knees bent, feet slightly off the ground','Hold the medicine ball at your chest, lean back to about 45°','Rotate your torso to touch the ball to the floor on one side','Rotate to the other side — that’s one rep'], tip: 'Keep your chest up and move from the ribcage, not just your arms' },
+  'Medicine Ball Woodchops': { steps: ['Stand with feet wider than shoulder-width, holding the ball with both hands','Start with the ball at one hip, knees slightly bent','Rotate and lift the ball diagonally across your body to above the opposite shoulder','Control the ball back down the same path — that’s one rep per side'], tip: 'Power comes from your hips and core, not your arms — rotate your whole torso' },
+  'Medicine Ball Push-Ups': { steps: ['Get into push-up position with one hand on the medicine ball, one on the floor','Lower your chest toward the ground, keeping your core tight','Push back up to the starting position','Roll the ball to the other hand and repeat — alternate each rep'], tip: 'The instability fires up your core and stabilizers — go slow until you find your balance' },
+  'Dumbbell Clean & Press': { steps: ['Stand with dumbbells at your sides, feet shoulder-width apart','Hinge slightly at the hips, then explosively shrug and pull the dumbbells to shoulder height','Catch them at your shoulders with a slight knee bend','Press overhead, then lower back to your sides for the next rep'], tip: 'Use your hips to generate power — this is an explosive move, not a slow curl-to-press' },
+  'Medicine Ball Wall Balls': { steps: ['Stand facing a wall about 2 feet back, holding the ball at your chest','Squat down until thighs are parallel','Drive up and throw the ball at a target spot high on the wall','Catch it as it comes down and immediately drop into the next squat'], tip: 'Pick a spot on the wall and aim for it every rep — consistency builds rhythm' },
+  'Dumbbell Renegade Rows': { steps: ['Get in a push-up position with hands gripping dumbbells on the floor','Keeping your body rigid, row one dumbbell up to your hip','Lower it back down and row the other side','Keep your hips square to the floor — don’t twist'], tip: 'Widen your feet for more stability — the wider the base, the easier the balance' },
+  'Medicine Ball Mountain Climbers': { steps: ['Place both hands on the medicine ball in a push-up position','Drive one knee toward your chest, keeping your core tight','Quickly switch legs, bringing the other knee forward','Keep alternating at a fast pace — like running in place'], tip: 'The unstable ball forces your core to work overtime — keep your shoulders directly over your hands' }
 };
 
-const WARMUPS = {
-  push: [
-    { name: 'Arm Circles', detail: '20 forward + 20 backward' },
-    { name: 'Shoulder Pass-Throughs', detail: 'Towel or broomstick · 10 slow reps' },
-    { name: 'Scapular Push-Ups', detail: 'On all fours, squeeze shoulder blades · 10 reps' },
-    { name: 'Slow Push-Ups', detail: '3s down, 3s up · 8 reps' },
-    { name: 'Light Dumbbell Press', detail: 'Lightest dumbbells · 15 easy reps' }
-  ],
-  pull: [
-    { name: 'Cat-Cow Stretch', detail: 'On all fours, arch and round your back · 10 reps' },
-    { name: 'Arm Circles', detail: '20 forward + 20 backward' },
-    { name: 'Scapular Squeezes', detail: 'Squeeze shoulder blades together · 15 reps' },
-    { name: 'Band/Towel Pull-Aparts', detail: 'Pull towel apart at chest height · 15 reps' },
-    { name: 'Light Lat Pulldowns', detail: 'Lightest setting · 15 easy reps' }
-  ],
-  legs: [
-    { name: 'Bodyweight Squats', detail: '15 slow reps with good form' },
-    { name: 'Leg Swings (Front/Back)', detail: 'Hold something for balance · 10 each leg' },
-    { name: 'Hip Circles', detail: 'Standing, circle each leg · 10 each direction' },
-    { name: 'Walking Knee Hugs', detail: 'Pull knee to chest as you walk · 10 each' },
-    { name: 'Bodyweight Lunges', detail: 'Alternating · 10 total' }
-  ],
-  upper: [
-    { name: 'Jumping Jacks', detail: '30 seconds' },
-    { name: 'Arm Circles', detail: '20 forward + 20 backward' },
-    { name: 'Slow Push-Ups', detail: '3s down, 3s up · 8 reps' },
-    { name: 'Band/Towel Pull-Aparts', detail: 'Pull towel apart at chest height · 15 reps' },
-    { name: 'Light Shoulder Press', detail: 'Lightest dumbbells · 12 easy reps' }
-  ]
-};
+const PROFILE_IDS = Object.keys(PROFILES);
+let currentProfile = (function() {
+  try { const p = localStorage.getItem('current_profile'); if (p && PROFILES[p]) return p; } catch(e) {}
+  return 'golden-goat';
+})();
 
-const COOLDOWNS = {
-  push: [
-    { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
-    { name: 'Overhead Tricep Stretch', detail: 'Pull elbow behind head · 30s each arm' },
-    { name: 'Cross-Body Shoulder Stretch', detail: 'Pull arm across chest · 30s each side' },
-    { name: 'Child’s Pose', detail: 'Kneel and reach forward on the floor · 30s' }
-  ],
-  pull: [
-    { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
-    { name: 'Bicep Wall Stretch', detail: 'Palm on wall behind you, turn body away · 30s each arm' },
-    { name: 'Seated Forward Fold', detail: 'Sit with legs out, reach for toes · 30s' },
-    { name: 'Child’s Pose', detail: 'Kneel and reach forward on the floor · 30s' }
-  ],
-  legs: [
-    { name: 'Standing Quad Stretch', detail: 'Pull heel to glute · 30s each leg' },
-    { name: 'Standing Hamstring Stretch', detail: 'Foot on low surface, lean forward · 30s each' },
-    { name: 'Hip Flexor Lunge Stretch', detail: 'Kneel in lunge, push hips forward · 30s each' },
-    { name: 'Pigeon Stretch', detail: 'Front shin across body, lean forward · 30s each' },
-    { name: 'Calf Stretch Against Wall', detail: 'Lean into wall, back leg straight · 30s each' }
-  ],
-  upper: [
-    { name: 'Doorway Chest Stretch', detail: 'Arm on door frame, lean through · 30s each side' },
-    { name: 'Lat Stretch', detail: 'Grab doorframe overhead, lean away · 30s each side' },
-    { name: 'Overhead Tricep Stretch', detail: 'Pull elbow behind head · 30s each arm' },
-    { name: 'Bicep Wall Stretch', detail: 'Palm on wall behind you, turn body away · 30s each arm' }
-  ]
-};
+function P() { return PROFILES[currentProfile]; }
 
 let openGuides = new Set();
 let openWarmup = false;
@@ -614,12 +807,15 @@ function weekLabel(dateStr) {
   return fmt(mon) + ' – ' + fmt(sun);
 }
 
+function stateKey() { return 'workout_state_' + currentProfile; }
+function historyKey() { return 'workout_history_' + currentProfile; }
+
 function loadHistory() {
-  try { return JSON.parse(localStorage.getItem('workout_history') || '[]'); } catch(e) { return []; }
+  try { return JSON.parse(localStorage.getItem(historyKey()) || '[]'); } catch(e) { return []; }
 }
 
 function saveHistory(h) {
-  try { localStorage.setItem('workout_history', JSON.stringify(h)); } catch(e) {}
+  try { localStorage.setItem(historyKey(), JSON.stringify(h)); } catch(e) {}
 }
 
 function archiveWeek(weekState) {
@@ -635,7 +831,7 @@ function archiveWeek(weekState) {
 function loadState() {
   const cw = getWeekStart();
   try {
-    const raw = localStorage.getItem('workout_state');
+    const raw = localStorage.getItem(stateKey());
     if (raw) {
       const s = JSON.parse(raw);
       if (s.weekStart === cw) return s;
@@ -646,7 +842,24 @@ function loadState() {
 }
 
 function saveState() {
-  try { localStorage.setItem('workout_state', JSON.stringify(state)); } catch(e) {}
+  try { localStorage.setItem(stateKey(), JSON.stringify(state)); } catch(e) {}
+}
+
+function switchProfile(id) {
+  if (id === currentProfile) return;
+  currentProfile = id;
+  try { localStorage.setItem('current_profile', id); } catch(e) {}
+  state = loadState();
+  openGuides = new Set();
+  openWarmup = false;
+  openCooldown = false;
+  activeView = 'workout';
+  historyIdx = 0;
+  historyDay = null;
+  selectedDay = getToday();
+  stopTimer();
+  renderProfileBar();
+  render();
 }
 
 function isSetDone(day, ei, si, src) {
@@ -660,7 +873,7 @@ function toggleSet(day, ei, si) {
   const was = state.days[day][ei][si];
   state.days[day][ei][si] = !was;
   saveState();
-  if (!was) { const w = WORKOUTS[day]; if (w) startTimer(w.exercises[ei].rest); }
+  if (!was) { const w = P().workouts[day]; if (w) startTimer(w.exercises[ei].rest); }
   render();
 }
 
@@ -691,7 +904,7 @@ function getLastWeight(day, ei) {
 }
 
 function allSetsDone(day, ei, src) {
-  const w = WORKOUTS[day];
+  const w = P().workouts[day];
   if (!w) return false;
   const ex = w.exercises[ei];
   for (let s = 0; s < ex.sets; s++) { if (!isSetDone(day, ei, s, src)) return false; }
@@ -699,7 +912,7 @@ function allSetsDone(day, ei, src) {
 }
 
 function getDayProgress(day, src) {
-  const w = WORKOUTS[day];
+  const w = P().workouts[day];
   if (!w) return { done: 0, total: 0 };
   let done = 0, total = 0;
   w.exercises.forEach((ex, ei) => {
@@ -723,6 +936,16 @@ function stopTimer() {
   document.getElementById('timerBar').classList.remove('visible');
 }
 
+function renderProfileBar() {
+  let h = '<div class="profile-bar">';
+  PROFILE_IDS.forEach(id => {
+    const p = PROFILES[id];
+    h += `<button class="profile-tab${id === currentProfile ? ' active' : ''}" data-profile="${id}">${p.name}<small>${p.subtitle}</small></button>`;
+  });
+  h += '</div>';
+  document.getElementById('profileBar').innerHTML = h;
+}
+
 function renderPhase(type, items, isOpen) {
   const label = type === 'warmup' ? 'Warm-Up' : 'Cool-Down';
   const time = type === 'warmup' ? '~5 min' : '~4 min';
@@ -744,14 +967,15 @@ function renderPhase(type, items, isOpen) {
 
 function render() {
   if (activeView === 'history') { renderHistory(); return; }
+  const prof = P();
   const today = getToday();
   const app = document.getElementById('app');
 
-  let h = `<div class="header"><div class="header-row"><div class="brand"><img class="brand-logo" src="/logo.jpg" alt="Golden Goat"><h1>Golden Goat<small>Workout App</small></h1></div><button class="view-btn" id="viewToggle">History</button></div>`;
+  let h = `<div class="header"><div class="header-row"><div class="brand"><img class="brand-logo" src="/logo.jpg" alt="Golden Goat"><h1>${prof.name}<small>${prof.subtitle}</small></h1></div><button class="view-btn" id="viewToggle">History</button></div>`;
 
   let wp = '';
   DAYS.forEach((day, i) => {
-    const isRest = !WORKOUTS[day]; const prog = getDayProgress(day);
+    const isRest = !prof.workouts[day]; const prog = getDayProgress(day);
     const isDone = !isRest && prog.done === prog.total;
     let cls = 'week-dot';
     if (isRest) cls += ' rest';
@@ -767,15 +991,15 @@ function render() {
   });
   h += `<nav class="day-tabs">${tabs}</nav></div>`;
 
-  const workout = WORKOUTS[selectedDay];
+  const workout = prof.workouts[selectedDay];
   h += `<main class="workout-section">`;
 
   if (!workout) {
+    const tips = currentProfile === 'lees-plan'
+      ? '<li>Go for a 20–30 min walk</li><li>Stay hydrated — aim for 3+ liters</li><li>Get 7–9 hours of sleep</li><li>Keep calories in a moderate deficit</li><li>Stretch or foam roll for 10–15 min</li>'
+      : '<li>Stretch or foam roll for 10–15 min</li><li>Stay hydrated — aim for 3+ liters</li><li>Get 7–9 hours of sleep</li><li>Hit your protein target (0.8–1g per lb)</li><li>Light walking if you feel stiff</li>';
     h += `<div class="rest-day"><h2>Rest Day</h2><p>Recovery is where the growth happens.<br>Take it easy and come back stronger.</p>
-      <div class="rest-tips"><h3>Recovery checklist</h3><ul>
-      <li>Stretch or foam roll for 10–15 min</li><li>Stay hydrated — aim for 3+ liters</li>
-      <li>Get 7–9 hours of sleep</li><li>Hit your protein target (0.8–1g per lb)</li>
-      <li>Light walking if you feel stiff</li></ul></div></div>`;
+      <div class="rest-tips"><h3>Recovery checklist</h3><ul>${tips}</ul></div></div>`;
   } else {
     const prog = getDayProgress(selectedDay);
     const pct = prog.total > 0 ? Math.round((prog.done / prog.total) * 100) : 0;
@@ -783,7 +1007,7 @@ function render() {
     h += `<div class="workout-header"><span class="workout-badge ${workout.type}">${workout.label}</span><span class="workout-focus">${workout.focus}</span></div>`;
     h += `<div class="progress-row"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><span class="progress-text">${pct}%</span></div>`;
 
-    if (WARMUPS[workout.type]) h += renderPhase('warmup', WARMUPS[workout.type], openWarmup);
+    if (prof.warmups[workout.type]) h += renderPhase('warmup', prof.warmups[workout.type], openWarmup);
 
     h += `<div class="exercise-list">`;
     workout.exercises.forEach((ex, ei) => {
@@ -802,7 +1026,7 @@ function render() {
       const guide = GUIDES[ex.name];
       const gk = selectedDay + '-' + ei;
       const isOpen = openGuides.has(gk);
-      const videoUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent('how to ' + ex.name + ' dumbbell form');
+      const videoUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent('how to ' + ex.name + ' form');
 
       h += `<div class="exercise-card${ad ? ' completed' : ''}">`;
       h += `<div class="exercise-top"><div class="exercise-info"><div class="exercise-name">${ex.name}</div><div class="exercise-detail">${ex.sets} × ${ex.reps} · ${ex.rest}s rest</div></div>`;
@@ -834,24 +1058,25 @@ function render() {
     h += `<div class="finisher-card"><div class="finisher-info"><div class="finisher-label">Finisher</div><div class="finisher-name">${workout.finisher.name}</div><div class="finisher-detail">${workout.finisher.detail}</div></div>`;
     h += `<button class="finisher-btn${fDone ? ' done' : ''}" data-finisher="${selectedDay}">${fDone ? 'Done' : 'Complete'}</button></div>`;
 
-    if (COOLDOWNS[workout.type]) h += renderPhase('cooldown', COOLDOWNS[workout.type], openCooldown);
+    if (prof.cooldowns[workout.type]) h += renderPhase('cooldown', prof.cooldowns[workout.type], openCooldown);
   }
 
   h += `</main>`;
-  h += `<footer class="footer"><button class="reset-btn" id="resetBtn">Reset This Week</button><p class="save-hint">To save as an app: tap Share, then "Add to Home Screen"</p></footer>`;
+  h += `<footer class="footer"><button class="reset-btn" id="resetBtn">Reset This Week</button><p class="save-hint">To save as an app: tap Share, then “Add to Home Screen”</p></footer>`;
 
   app.innerHTML = h;
 }
 
 function renderHistory() {
+  const prof = P();
   const history = loadHistory();
   const app = document.getElementById('app');
   if (!historyDay) historyDay = getToday();
 
-  let h = `<div class="header"><div class="header-row"><div class="brand"><img class="brand-logo" src="/logo.jpg" alt="Golden Goat"><h1>History<small>Golden Goat</small></h1></div><button class="view-btn" id="viewToggle">← Back</button></div>`;
+  let h = `<div class="header"><div class="header-row"><div class="brand"><img class="brand-logo" src="/logo.jpg" alt="Golden Goat"><h1>History<small>${prof.name}</small></h1></div><button class="view-btn" id="viewToggle">← Back</button></div>`;
 
   if (history.length === 0) {
-    h += `</div><div class="empty-state"><p>No history yet.<br>Complete your first week and it'll appear here.</p></div>`;
+    h += `</div><div class="empty-state"><p>No history yet.<br>Complete your first week and it’ll appear here.</p></div>`;
     app.innerHTML = h; return;
   }
 
@@ -866,7 +1091,7 @@ function renderHistory() {
   });
   h += `<nav class="day-tabs">${tabs}</nav></div>`;
 
-  const workout = WORKOUTS[historyDay];
+  const workout = prof.workouts[historyDay];
   h += `<main class="workout-section">`;
 
   if (!workout) {
@@ -890,6 +1115,11 @@ function renderHistory() {
   h += `</main>`;
   app.innerHTML = h;
 }
+
+document.getElementById('profileBar').addEventListener('click', (e) => {
+  const tab = e.target.closest('.profile-tab');
+  if (tab) switchProfile(tab.dataset.profile);
+});
 
 document.getElementById('app').addEventListener('click', (e) => {
   const t = e.target;
@@ -954,6 +1184,7 @@ document.getElementById('app').addEventListener('click', (e) => {
 
 document.getElementById('timerSkip').addEventListener('click', stopTimer);
 
+renderProfileBar();
 render();
 </script>
 </body>
