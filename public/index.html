@@ -1027,7 +1027,7 @@ function renderProfileBar() {
   let h = '<div class="profile-bar">';
   PROFILE_IDS.forEach(id => {
     const p = PROFILES[id];
-    h += `<button class="profile-tab${id === currentProfile ? ' active' : ''}" data-profile="${id}">${p.name}<small>${p.subtitle}</small></button>`;
+    h += `<button class="profile-tab${id === currentProfile ? ' active' : ''}" data-profile="${id}">${p.name}</button>`;
   });
   h += '</div>';
   document.getElementById('profileBar').innerHTML = h;
@@ -1058,7 +1058,7 @@ function render() {
   const today = getToday();
   const app = document.getElementById('app');
 
-  let h = `<div class="header"><div class="header-row"><div class="brand"><img class="brand-logo" src="/logo.jpg" alt="Golden Goat"><h1>${prof.name}<small>${prof.subtitle}</small></h1></div><button class="view-btn" id="viewToggle">History</button></div>`;
+  let h = `<div class="header"><div class="header-row"><div class="brand"><img class="brand-logo" src="/logo.jpg" alt="Golden Goat"><h1>${prof.name}</h1></div><button class="view-btn" id="viewToggle">History</button></div>`;
 
   let wp = '';
   DAYS.forEach((day, i) => {
