@@ -101,6 +101,83 @@
     color-scheme: dark;
   }
 
+  /* Lee's girly theme — light */
+  :root[data-profile="lees-plan"] {
+    --bg: #FFF5F7;
+    --surface: #FFFFFF;
+    --surface-alt: #FCE4EC;
+    --fg: #2D1B2E;
+    --fg-secondary: #8E6B8A;
+    --accent: #E91E90;
+    --accent-soft: #FCE4EC;
+    --accent-glow: rgba(233,30,144,0.10);
+    --border: #F3C4D7;
+    --badge-circuit: #E91E90;
+    --badge-hiit: #D32F7B;
+    --badge-metcon: #9C27B0;
+    --timer-bg: #E91E90;
+    --timer-fg: #FFFFFF;
+    --danger: #D32F2F;
+    --danger-soft: #FCE4EC;
+    --warmup: #AD1457;
+    --warmup-soft: #FCE4EC;
+    --cooldown: #9C27B0;
+    --cooldown-soft: #F3E5F5;
+  }
+  /* Lee's girly theme — dark (auto) */
+  @media (prefers-color-scheme: dark) {
+    :root[data-profile="lees-plan"]:not([data-theme="light"]) {
+      --bg: #1A0E16;
+      --surface: #251620;
+      --surface-alt: #30192A;
+      --fg: #F5E6F0;
+      --fg-secondary: #B89AAF;
+      --accent: #F472B6;
+      --accent-soft: rgba(244,114,182,0.14);
+      --accent-glow: rgba(244,114,182,0.08);
+      --border: #3D2435;
+      --badge-circuit: #F472B6;
+      --badge-hiit: #FB7185;
+      --badge-metcon: #C084FC;
+      --timer-bg: #DB2777;
+      --timer-fg: #FFFFFF;
+      --danger: #FB7185;
+      --danger-soft: rgba(251,113,133,0.14);
+      --warmup: #F9A8D4;
+      --warmup-soft: rgba(249,168,212,0.12);
+      --cooldown: #D8B4FE;
+      --cooldown-soft: rgba(216,180,254,0.12);
+    }
+  }
+  /* Lee's girly theme — dark (forced) */
+  :root[data-profile="lees-plan"][data-theme="dark"] {
+    --bg: #1A0E16;
+    --surface: #251620;
+    --surface-alt: #30192A;
+    --fg: #F5E6F0;
+    --fg-secondary: #B89AAF;
+    --accent: #F472B6;
+    --accent-soft: rgba(244,114,182,0.14);
+    --accent-glow: rgba(244,114,182,0.08);
+    --border: #3D2435;
+    --badge-circuit: #F472B6;
+    --badge-hiit: #FB7185;
+    --badge-metcon: #C084FC;
+    --timer-bg: #DB2777;
+    --timer-fg: #FFFFFF;
+    --danger: #FB7185;
+    --danger-soft: rgba(251,113,133,0.14);
+    --warmup: #F9A8D4;
+    --warmup-soft: rgba(249,168,212,0.12);
+    --cooldown: #D8B4FE;
+    --cooldown-soft: rgba(216,180,254,0.12);
+  }
+
+  /* Lee's profile tab highlight */
+  :root[data-profile="lees-plan"] .profile-tab.active {
+    background: linear-gradient(135deg, #FCE4EC, #F3E5F5);
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -848,6 +925,7 @@ function saveState() {
 function switchProfile(id) {
   if (id === currentProfile) return;
   currentProfile = id;
+  document.documentElement.setAttribute('data-profile', id);
   try { localStorage.setItem('current_profile', id); } catch(e) {}
   state = loadState();
   openGuides = new Set();
@@ -1184,6 +1262,7 @@ document.getElementById('app').addEventListener('click', (e) => {
 
 document.getElementById('timerSkip').addEventListener('click', stopTimer);
 
+document.documentElement.setAttribute('data-profile', currentProfile);
 renderProfileBar();
 render();
 </script>
