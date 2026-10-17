@@ -694,16 +694,17 @@ const PROFILES = {
         finisher: { name: 'Treadmill Intervals', detail: '15 min · 30s sprint / 60s jog' }
       },
       tuesday: {
-        type: 'legs', label: 'Lower', focus: 'Legs & Core',
+        type: 'legs', label: 'Lower', focus: 'Glutes & Legs',
         exercises: [
+          { name: 'Dumbbell Hip Thrusts', sets: 4, reps: '15', rest: 45 },
+          { name: 'Dumbbell Sumo Deadlifts', sets: 3, reps: '12', rest: 45 },
+          { name: 'Dumbbell Curtsy Lunges', sets: 3, reps: '12 each', rest: 45 },
           { name: 'Dumbbell Goblet Squats', sets: 3, reps: '15', rest: 45 },
-          { name: 'Medicine Ball Woodchops', sets: 3, reps: '12 each side', rest: 30 },
+          { name: 'Dumbbell Glute Bridges', sets: 3, reps: '20', rest: 30 },
           { name: 'Dumbbell Romanian Deadlifts', sets: 3, reps: '12', rest: 45 },
-          { name: 'Dumbbell Step-Ups', sets: 3, reps: '12 each', rest: 45 },
-          { name: 'Medicine Ball Slams', sets: 3, reps: '12', rest: 30 },
-          { name: 'Dumbbell Calf Raises', sets: 3, reps: '20', rest: 30 }
+          { name: 'Medicine Ball Woodchops', sets: 3, reps: '12 each side', rest: 30 }
         ],
-        finisher: { name: 'Treadmill Incline Walk', detail: '15 min at 12–15% grade' }
+        finisher: { name: 'Treadmill Incline Walk', detail: '15 min at 12–15% grade (squeeze glutes each step)' }
       },
       wednesday: {
         type: 'pull', label: 'Upper', focus: 'Upper Body Burn',
@@ -718,13 +719,14 @@ const PROFILES = {
         finisher: { name: 'Treadmill Sprints', detail: '12 min · 20s all-out / 40s walk' }
       },
       thursday: {
-        type: 'hiit', label: 'HIIT', focus: 'Full Body Power',
+        type: 'hiit', label: 'HIIT', focus: 'Full Body Power + Glutes',
         exercises: [
           { name: 'Dumbbell Clean & Press', sets: 3, reps: '10', rest: 30 },
-          { name: 'Lat Pulldown (Underhand)', sets: 3, reps: '15', rest: 30 },
-          { name: 'Medicine Ball Wall Balls', sets: 3, reps: '15', rest: 30 },
           { name: 'Dumbbell Sumo Squats', sets: 3, reps: '15', rest: 30 },
-          { name: 'Dumbbell Renegade Rows', sets: 3, reps: '10 each', rest: 30 },
+          { name: 'Lat Pulldown (Underhand)', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Hip Thrusts', sets: 3, reps: '15', rest: 30 },
+          { name: 'Medicine Ball Wall Balls', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Kickbacks (Glute)', sets: 3, reps: '12 each', rest: 30 },
           { name: 'Medicine Ball Mountain Climbers', sets: 3, reps: '20 each', rest: 30 }
         ],
         finisher: { name: 'Treadmill Sprints', detail: '10 min · 20s all-out / 40s walk' }
@@ -732,14 +734,15 @@ const PROFILES = {
       friday: null,
       saturday: null,
       sunday: {
-        type: 'metcon', label: 'Metcon', focus: 'Metabolic Conditioning',
+        type: 'metcon', label: 'Metcon', focus: 'Metcon + Glute Burnout',
         exercises: [
-          { name: 'Dumbbell Goblet Squats', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Sumo Squats', sets: 3, reps: '15', rest: 30 },
           { name: 'Medicine Ball Slams', sets: 3, reps: '15', rest: 30 },
+          { name: 'Dumbbell Glute Bridges', sets: 3, reps: '20', rest: 30 },
           { name: 'Lat Pulldown (Wide Grip)', sets: 3, reps: '15', rest: 30 },
-          { name: 'Dumbbell Walking Lunges', sets: 3, reps: '12 each', rest: 30 },
+          { name: 'Dumbbell Curtsy Lunges', sets: 3, reps: '12 each', rest: 30 },
           { name: 'Medicine Ball Woodchops', sets: 3, reps: '12 each side', rest: 30 },
-          { name: 'Dumbbell Shoulder Press', sets: 3, reps: '12', rest: 30 }
+          { name: 'Dumbbell Single-Leg Deadlifts', sets: 3, reps: '10 each', rest: 30 }
         ],
         finisher: { name: 'Treadmill Hill Intervals', detail: '15 min · 1 min 12% grade / 1 min flat' }
       }
@@ -857,7 +860,12 @@ const GUIDES = {
   'Dumbbell Clean & Press': { steps: ['Stand with dumbbells at your sides, feet shoulder-width apart','Hinge slightly at the hips, then explosively shrug and pull the dumbbells to shoulder height','Catch them at your shoulders with a slight knee bend','Press overhead, then lower back to your sides for the next rep'], tip: 'Use your hips to generate power — this is an explosive move, not a slow curl-to-press' },
   'Medicine Ball Wall Balls': { steps: ['Stand facing a wall about 2 feet back, holding the ball at your chest','Squat down until thighs are parallel','Drive up and throw the ball at a target spot high on the wall','Catch it as it comes down and immediately drop into the next squat'], tip: 'Pick a spot on the wall and aim for it every rep — consistency builds rhythm' },
   'Dumbbell Renegade Rows': { steps: ['Get in a push-up position with hands gripping dumbbells on the floor','Keeping your body rigid, row one dumbbell up to your hip','Lower it back down and row the other side','Keep your hips square to the floor — don’t twist'], tip: 'Widen your feet for more stability — the wider the base, the easier the balance' },
-  'Medicine Ball Mountain Climbers': { steps: ['Place both hands on the medicine ball in a push-up position','Drive one knee toward your chest, keeping your core tight','Quickly switch legs, bringing the other knee forward','Keep alternating at a fast pace — like running in place'], tip: 'The unstable ball forces your core to work overtime — keep your shoulders directly over your hands' }
+  'Medicine Ball Mountain Climbers': { steps: ['Place both hands on the medicine ball in a push-up position','Drive one knee toward your chest, keeping your core tight','Quickly switch legs, bringing the other knee forward','Keep alternating at a fast pace — like running in place'], tip: 'The unstable ball forces your core to work overtime — keep your shoulders directly over your hands' },
+  'Dumbbell Sumo Deadlifts': { steps: ['Stand with feet wide apart, toes pointed out at 45°','Hold one dumbbell with both hands hanging between your legs','Hinge at the hips and bend your knees to lower the dumbbell toward the floor','Drive through your heels and squeeze your glutes to stand back up'], tip: 'Push your knees out over your toes — you should feel this deep in your glutes and inner thighs' },
+  'Dumbbell Curtsy Lunges': { steps: ['Stand holding dumbbells at your sides','Step one foot behind and across your body, like a curtsy','Lower your back knee toward the floor while keeping your front knee tracking over your toes','Push through your front heel to return to standing and repeat on the other side'], tip: 'The cross-behind step targets your outer glutes (gluteus medius) — keep your chest tall' },
+  'Dumbbell Glute Bridges': { steps: ['Lie on the floor with knees bent, feet flat, holding a dumbbell on your hips','Drive through your heels to lift your hips up until your body forms a straight line from shoulders to knees','Squeeze your glutes as hard as you can at the top — hold for 2 seconds','Lower your hips back down slowly and repeat'], tip: 'Push through your heels, not your toes — you should barely feel this in your quads' },
+  'Dumbbell Kickbacks (Glute)': { steps: ['Get on all fours with a light dumbbell behind one knee, squeeze it in place','Keeping your core tight, press that foot straight up toward the ceiling','Squeeze your glute hard at the top and hold for a second','Lower back down with control — don't let momentum swing your leg'], tip: 'Keep your hips square to the floor — no twisting. Quality squeezes beat fast reps' },
+  'Dumbbell Single-Leg Deadlifts': { steps: ['Stand on one leg holding a dumbbell in the opposite hand','Hinge at the hips, extending your free leg straight behind you for balance','Lower the dumbbell toward the floor until your torso is nearly parallel','Drive through your standing heel and squeeze your glute to stand back up'], tip: 'Focus on a spot on the floor for balance — go slow and controlled, this builds glutes and stability' }
 };
 
 const PROFILE_IDS = Object.keys(PROFILES);
